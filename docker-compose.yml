@@ -1,5 +1,4 @@
 services:
-
   app:
     build: 
       context: .
@@ -7,7 +6,6 @@ services:
       args:
         - REST_PORT=${REST_PORT}
     ports:
-      # - "8000:8000"
       - "${REST_PORT}:${REST_PORT}"
     depends_on:
       - postgres
