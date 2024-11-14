@@ -1,0 +1,37 @@
+services:
+
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - REST_PORT=${REST_PORT}
+    ports:
+      # - "8000:8000"
+      - "${REST_PORT}:${REST_PORT}"
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cosmogram
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
