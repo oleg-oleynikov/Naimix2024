@@ -8,8 +8,8 @@ import swisseph as swe
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    swe.set_ephe_path(settings.SWISSEPH_PATH)
     await database.connect()
+    swe.set_ephe_path(settings.SWISSEPH_PATH)
     yield
     await database.disconnect()
 

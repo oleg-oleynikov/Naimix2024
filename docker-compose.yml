@@ -12,7 +12,7 @@ services:
     restart: always
     networks:
       - app-network
-
+  
   postgres:
     image: postgres:16
     ports:
@@ -20,11 +20,55 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: cosmogram
+      POSTGRES_DB: naimix
     volumes:
       - postgres_data:/var/lib/postgresql/data 
     networks:
       - app-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: naimix
+      KC_DB_USERNAME: user
+      KC_DB_PASSWORD: password
+
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 4444
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+      KC_HTTP_ENABLED: "true"
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    depends_on:
+      - postgres
+    ports:
+      - 4444:4444
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: always
 
 networks:
   app-network:
@@ -32,4 +76,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  pgadmin_data:
     driver: local

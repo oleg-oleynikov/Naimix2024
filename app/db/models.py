@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class Cosmogram(Base):
-    __tablename__ = "cosmograms"
+    __tablename__ = "cosmogram"
     id = Column(Integer, primary_key=True)
 
     date_of_birth = Column(DateTime, nullable=False)

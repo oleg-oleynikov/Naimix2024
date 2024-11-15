@@ -25,20 +25,24 @@ class CosmogramService:
     async def create_cosmogram(self, cosmogram: CosmogramCreate) -> CosmogramRead:
         planet_positions = await self.calculate_planet_position(cosmogram)
         cusps = await self.calculate_houses(cosmogram)
+        
         ascendant = cusps[0]
         ic = cusps[3]
         ds = cusps[6]
         mc = cusps[9]
 
+        aspects = await self.calculate_aspects(planet_positions)
+        cosmogram_id = await self.cosmogram_repository.create_cosmogram(cosmogram, planet_positions, cusps, aspects)
+
         return CosmogramRead(
-            id=1,
+            id=cosmogram_id,
             date_of_birth=cosmogram.birth_date,
             latitude=cosmogram.latitude,
             longitude=cosmogram.longitude,
             planets=planet_positions,
             ascendant=ascendant,
             cusps=cusps,
-            aspects={},
+            aspects=aspects,
             ic=ic,
             ds=ds,
             mc=mc
@@ -74,3 +78,42 @@ class CosmogramService:
 
         cusps, _ = swe.houses(jd, cosmogram.latitude, cosmogram.longitude, hsys=hsys)
         return cusps
+    
+    async def calculate_aspects(self, planet_positions: Dict[str, float], aspects_orbs: Dict[str, int] = {}) -> List[Dict[str, (float|str)]]:
+        if aspects_orbs is {}:
+            print("ОН все таки None")
+            aspects_orbs = {
+                "Conjunction": 8,
+                "Square": 8,
+                "Trine": 8,
+                "Opposition": 8
+            }
+
+        aspects = {
+            "Conjunction": 0,
+            "Square": 90,
+            "Trine": 120,
+            "Opposition": 180
+        }
+
+        aspect_data = []
+
+        planets = list(planet_positions.keys())
+        for i, planet1 in enumerate(planets):
+            for planet2 in planets[i + 1:]:  
+                pos1 = planet_positions[planet1]
+                pos2 = planet_positions[planet2]
+                
+                angle = abs(pos1 - pos2) % 360
+
+                for aspect_name, aspect_angle in aspects.items():
+                    orb = aspects_orbs.get(aspect_name, 8) 
+                    if abs(angle - aspect_angle) <= orb:
+                        aspect_data.append({
+                            "planet1": planet1,
+                            "planet2": planet2,
+                            "aspect": aspect_name,
+                            "angle": angle
+                        })
+                        
+        return aspect_data
