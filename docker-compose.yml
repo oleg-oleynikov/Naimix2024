@@ -53,6 +53,8 @@ services:
     ports:
       - "4444:4444"
       - "7443:7443"
+    volumes:
+      - .app/auth/realm.json:/opt/keycloak/data/import/realm.json
     networks:
       - app-network
 

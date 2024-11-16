@@ -1,0 +1,65 @@
+{
+    "id": "master",
+    "realm": "master",
+    "enabled": true,
+    "roles": {
+      "realm": [
+        {
+          "name": "admin",
+          "description": "Administrator role"
+        },
+        {
+          "name": "manager",
+          "description": "Manager role"
+        },
+        {
+          "name": "employee",
+          "description": "Employee role"
+        },
+        {
+          "name": "candidate",
+          "description": "Candidate role"
+        }
+      ]
+    },
+    "clients": [
+      {
+        "clientId": "naimix-client",
+        "secret": "VJ1xhLLgBRljDoQQC01CyYIAM6vpxyYp",
+        "enabled": true,
+        "directAccessGrantsEnabled": true,
+        "publicClient": false,
+        "protocol": "openid-connect",
+        "redirectUris": ["http://localhost:8000/*"]
+      }
+    ],
+    "users": [
+      {
+        "username": "admin",
+        "email": "admin@example.com",
+        "enabled": true,
+        "credentials": [
+          {
+            "type": "password",
+            "value": "securepassword123",
+            "temporary": false
+          }
+        ],
+        "realmRoles": ["admin"]
+      },
+      {
+        "username": "employee1",
+        "email": "employee1@example.com",
+        "enabled": true,
+        "credentials": [
+          {
+            "type": "password",
+            "value": "password123",
+            "temporary": false
+          }
+        ],
+        "realmRoles": ["employee"]
+      }
+    ]
+  }
+  

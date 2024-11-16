@@ -5,7 +5,7 @@ keycloak_openid = KeycloakOpenID(
     server_url=settings.KEYCLOAK_URL,
     client_id=settings.KEYCLOAK_CLIENT_ID,
     realm_name=settings.KEYCLOAK_REALM_NAME,
-    client_secret_key=settings.KEYCLOAK_SECRET_KEY  # Получите его из настроек клиента в Keycloak
+    client_secret_key=settings.KEYCLOAK_SECRET_KEY
 )
 
 def get_keycloak_client():
